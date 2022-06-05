@@ -6,6 +6,17 @@
       <div v-if="!playlists.length">
       No playlists :( please add from <a @click="showModal(null)" style="color: #42b983; cursor: pointer;">here</a>
     </div>
+     <article style="margin-top: 50px; margin-left: 174px;">
+      <div style="margin: 0" class="wrap">
+        <div style="left: 26.5em; width: 167px;" class="search">
+            <input type="text" v-model="nameSearch" class="searchTerm"
+            placeholder="Name" autocomplete="off">
+            <button type="submit" class="searchButton">
+              <img style="width: 20px;" src="../../assets/322497_search_icon.png" alt="">
+          </button>
+        </div>
+    </div>
+   </article>
       <div v-if="playlists.length" style="display: flex; width: 500px; margin: 0 auto; background: #CCC;
     padding: 20px 0px; color: white ; margin-top: 20px;">
       <div class="w-150">Name</div>
@@ -13,7 +24,7 @@
       <div class="w-115">Tracks</div>
     </div>
      <div style=" width: 500px;" class="tracks-wrapper">
-      <div v-for="(playlist, index) in playlists"
+      <div v-for="(playlist, index) in filteredPlaylists"
       @click="$router.push({name:'playlist', query: { id: playlist.id } })" 
       style="cursor: pointer" :style="{'background':
       index % 2 == 0 ? '#dbdbdb' : '#f0eded'}" class="single-track-row"
@@ -48,6 +59,7 @@ export default {
             isModalVisible: false,
             deleteItem: null,
             isDeleteModalVisible: false,
+            nameSearch: null,
         }
     },
     components:{
@@ -58,6 +70,17 @@ export default {
     user(){
       return this.$store.state.user;
     },
+    filteredPlaylists(){
+      var res = this.playlists;
+      if(!this.nameSearch){
+        return this.playlists;
+      }
+        if(this.nameSearch){
+         res = res.filter(x => x.name.toLowerCase()
+      .includes(this.nameSearch.toLowerCase()))
+      }
+      return res;
+    }
   },
   created(){
       this.getAllPublicPlaylists();
